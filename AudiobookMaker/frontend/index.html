@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudiobookMaker - AI有声书制作工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .upload-section {
+            text-align: center;
+            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        
+        .upload-section:hover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .characters-section {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .characters-section h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .character-card {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .character-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .character-info p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .voice-select {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            background: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        
+        .preview-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .preview-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .preview-text {
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.8;
+            color: #555;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .generate-btn {
+            display: none;
+            width: 100%;
+            padding: 20px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .progress-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .download-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.2em;
+            transition: transform 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 AudiobookMaker</h1>
+            <p>AI智能有声书制作工具 - 让每本书都有声音</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- 上传区域 -->
+            <div class="upload-section" id="uploadSection">
+                <input type="file" id="fileInput" accept=".txt,.epub,.pdf">
+                <label for="fileInput" class="upload-btn">
+                    📁 选择书籍文件
+                </label>
+                <p style="margin-top: 20px; color: #666;">
+                    支持 TXT、EPUB、PDF 格式
+                </p>
+            </div>
+            
+            <!-- 角色配置区域 -->
+            <div class="characters-section" id="charactersSection">
+                <h2>🎭 识别到的角色</h2>
+                <div id="charactersList"></div>
+            </div>
+            
+            <!-- 预览区域 -->
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h3>📖 内容预览</h3>
+                <div class="preview-text" id="previewText"></div>
+            </div>
+            
+            <!-- 生成按钮 -->
+            <button class="generate-btn" id="generateBtn">
+                🎙️ 开始生成有声书
+            </button>
+            
+            <!-- 进度区域 -->
+            <div class="progress-section" id="progressSection">
+                <h3>🎵 正在生成有声书...</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">0%</p>
+            </div>
+            
+            <!-- 下载区域 -->
+            <div class="download-section" id="downloadSection">
+                <h3>✅ 有声书生成完成！</h3>
+                <a href="#" class="download-btn" id="downloadBtn">
+                    ⬇️ 下载有声书
+                </a>
+            </div>
+        </div>
+        
+        <!-- 功能介绍 -->
+        <div class="features">
+            <div class="feature-card">
+                <h3>🤖 AI角色识别</h3>
+                <p>自动识别书中所有角色，分析对话和旁白</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎙️ 多声音配音</h3>
+                <p>为不同角色分配不同声音，让故事更生动</p>
+            </div>
+            <div class="feature-card">
+                <h3>⚡ 快速生成</h3>
+                <p>使用先进的AI语音合成技术，快速生成高质量音频</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎨 自定义设置</h3>
+                <p>调整语速、音调，添加背景音乐等</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>AudiobookMaker © 2024 - AI有声书制作工具</p>
+        </footer>
+    </div>
+    
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:8000';
+        
+        let currentBookId = null;
+        let availableVoices = [];
+        
+        // 文件上传
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                currentBookId = data.book_id;
+                
+                // 显示角色列表
+                displayCharacters(data.characters);
+                
+                // 显示预览
+                document.getElementById('previewText').textContent = data.preview;
+                document.getElementById('previewSection').style.display = 'block';
+                
+                // 显示生成按钮
+                document.getElementById('generateBtn').style.display = 'block';
+                
+            } catch (error) {
+                alert('上传失败: ' + error.message);
+            }
+        });
+        
+        // 显示角色列表
+        async function displayCharacters(characters) {
+            const container = document.getElementById('charactersList');
+            container.innerHTML = '';
+            
+            // 获取可用声音
+            try {
+                const response = await fetch(`${API_BASE}/api/voices`);
+                availableVoices = await response.json();
+            } catch (e) {
+                console.error('获取声音列表失败:', e);
+            }
+            
+            characters.forEach(char => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                
+                const voiceOptions = availableVoices.map(v => 
+                    `<option value="${v.id}">${v.name} (${v.gender})</option>`
+                ).join('');
+                
+                card.innerHTML = `
+                    <div class="character-info">
+                        <h3>${char.name}</h3>
+                        <p>${char.description || '对话次数: ' + char.dialogue_count}</p>
+                    </div>
+                    <select class="voice-select" data-character="${char.name}">
+                        ${voiceOptions}
+                    </select>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            document.getElementById('charactersSection').style.display = 'block';
+        }
+        
+        // 生成有声书
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            if (!currentBookId) return;
+            
+            // 收集角色声音配置
+            const characterVoices = {};
+            document.querySelectorAll('.voice-select').forEach(select => {
+                characterVoices[select.dataset.character] = select.value;
+            });
+            
+            // 显示进度
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('generateBtn').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        book_id: currentBookId,
+                        character_voices: characterVoices
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // 模拟进度
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    document.getElementById('progressFill').style.width = progress + '%';
+                    document.getElementById('progressText').textContent = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        // 显示下载
+                        document.getElementById('downloadSection').style.display = 'block';
+                        document.getElementById('downloadBtn').href = `${API_BASE}${data.download_url}`;
+                    }
+                }, 200);
+                
+            } catch (error) {
+                alert('生成失败: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

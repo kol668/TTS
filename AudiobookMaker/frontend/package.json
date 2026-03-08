@@ -1,0 +1,17 @@
+{
+  "name": "audiobookmaker-frontend",
+  "version": "1.0.0",
+  "description": "AI有声书制作工具前端",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx live-server --port=3000 --open=/"
+  },
+  "keywords": ["audiobook", "tts", "ai"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  }
+}
